@@ -48,21 +48,22 @@ class PizzaDirector:
         self.builder = builder
 
     def build_margherita(self):
-        self.builder.set_size("medium")
-        self.builder.set_sauce("tomato")
-        self.builder.add_topping("mozzarela")
-        return self.builder.build()
+        return self.builder\
+            .set_size("medium")\
+            .set_sauce("tomato")\
+            .add_topping("mozzarela")\
+            .build()
 
     def build_pepperoni(self):
-        self.builder.set_size("large")
-        self.builder.set_sauce("tomato")
-        self.builder.add_topping("mozzarela")
-        self.builder.add_topping("pepperoni")
-        return self.builder.build()
+        return self.builder\
+            .set_size("large")\
+            .set_sauce("tomato")\
+            .add_topping("mozzarela")\
+            .add_topping("pepperoni")\
+            .build()
 
 if __name__ == "__main__":
-    builder = PizzaBuilder()
-    director = PizzaDirector(builder)
+    director = PizzaDirector(PizzaBuilder())
 
     margherita = director.build_margherita()
     print(margherita)
