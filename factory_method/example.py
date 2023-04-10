@@ -9,8 +9,11 @@ class Entity:
     '''
     name: str
 
-    def __eq__(self, other: Entity):
-        return self.name == other.name
+    def __eq__(self, other: object):
+        if isinstance(other, Entity):
+            return self.name == other.name
+        
+        return False
 
 class ListClientsDB(IStorage[Entity]):
     def __init__(self):
