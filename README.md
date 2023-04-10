@@ -2,7 +2,8 @@
 Design patterns with python examples.
 
  - [factory method](factory_method) 
- - [abstract factory](abstract_factory) 
+ - [abstract factory](abstract_factory)
+ - [bridge](bridge)
  - [decorator](decorator) 
  - [builder](builder) 
  - [adapter](adapter)
