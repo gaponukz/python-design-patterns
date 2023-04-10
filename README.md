@@ -5,5 +5,6 @@ Design patterns with python examples.
  - [abstract factory](abstract_factory) 
  - [decorator](decorator) 
  - [builder](builder) 
- - [adapter](adapter) 
+ - [adapter](adapter)
+ - [prototype](prototype) 
  - [singleton](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 
