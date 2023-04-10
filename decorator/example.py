@@ -19,7 +19,7 @@ def problem():
     return price
 
 class DiscountDecorator(Product):
-    _product: Product = None
+    _product: Product | None = None
 
     def __init__(self, product: Product, discount: float):
         super().__init__(product.name, product.price) # is not mandatory
