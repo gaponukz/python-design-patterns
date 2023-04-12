@@ -9,4 +9,5 @@ Design patterns with python examples.
  - [adapter](adapter)
  - [facade](facade)
  - [prototype](prototype) 
+ - [composite](composite) 
  - [singleton](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 
