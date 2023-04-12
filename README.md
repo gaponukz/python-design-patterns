@@ -7,5 +7,6 @@ Design patterns with python examples.
  - [decorator](decorator) 
  - [builder](builder) 
  - [adapter](adapter)
+ - [facade](facade)
  - [prototype](prototype) 
  - [singleton](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 
