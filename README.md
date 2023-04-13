@@ -10,4 +10,5 @@ Design patterns with python examples.
  - [facade](facade)
  - [prototype](prototype) 
  - [proxy](proxy) 
+ - [composite](composite) 
  - [singleton](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 
