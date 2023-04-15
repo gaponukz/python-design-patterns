@@ -11,4 +11,5 @@ Design patterns with python examples.
  - [prototype](prototype) 
  - [proxy](proxy) 
  - [composite](composite) 
+ - [flyweight](flyweight) 
  - [singleton](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 
