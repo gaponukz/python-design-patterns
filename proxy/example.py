@@ -1,81 +1,97 @@
-from abc import ABC, abstractmethod
+import abc
+import httpx
+import logging
+import datetime
+import functools
+
+from httpx._exceptions import ConnectTimeout, ReadTimeout
+
+logging.basicConfig(level=logging.INFO)
 
 
-class Subject(ABC):
-    """
-    The Subject interface declares common operations for both RealSubject and
-    the Proxy. As long as the client works with RealSubject using this
-    interface, you'll be able to pass it a proxy instead of a real subject.
-    """
+class IFetchUrl(abc.ABC):
+    """Abstract base class. You can't instantiate this independently."""
 
-    @abstractmethod
-    def request(self) -> None:
+    @abc.abstractmethod
+    def get_data(self, url: str) -> dict:
         pass
 
+    @abc.abstractmethod
+    def get_headers(self, data: dict) -> dict:
+        pass
 
-class RealSubject(Subject):
-    """
-    The RealSubject contains some core business logic. Usually, RealSubjects are
-    capable of doing some useful work which may also be very slow or sensitive -
-    e.g. correcting input data. A Proxy can solve these issues without any
-    changes to the RealSubject's code.
-    """
+    @abc.abstractmethod
+    def get_args(self, data: dict) -> dict:
+        pass
 
-    def request(self) -> None:
-        print("RealSubject: Handling request.")
+class FetchUrl(IFetchUrl):
+    """Concrete class that doesn't handle exceptions and loggings."""
 
+    def get_data(self, url: str) -> dict:
+        with httpx.Client() as client:
+            response = client.get(url)
+            data = response.json()
+            return data
 
-class Proxy(Subject):
-    """
-    The Proxy has an interface identical to the RealSubject.
-    """
+    def get_headers(self, data: dict) -> dict:
+        return data["headers"]
 
-    def __init__(self, real_subject: RealSubject) -> None:
-        self._real_subject = real_subject
+    def get_args(self, data: dict) -> dict:
+        return data["args"]
 
-    def request(self) -> None:
-        """
-        The most common applications of the Proxy pattern are lazy loading,
-        caching, controlling the access, logging, etc. A Proxy can perform one
-        of these things and then, depending on the result, pass the execution to
-        the same method in a linked RealSubject object.
-        """
+class ExcFetchUrl(IFetchUrl):
+    """This class can be swapped out with the FetchUrl class.
+    It provides additional exception handling and logging."""
 
-        if self.check_access():
-            self._real_subject.request()
-            self.log_access()
+    def __init__(self) -> None:
+        self._fetch_url = FetchUrl()
 
-    def check_access(self) -> bool:
-        print("Proxy: Checking access prior to firing a real request.")
-        return True
+    def get_data(self, url: str) -> dict:
+        try:
+            data = self._fetch_url.get_data(url)
+            return data
 
-    def log_access(self) -> None:
-        print("Proxy: Logging the time of request.", end="")
+        except ConnectTimeout:
+            logging.error("Connection time out. Try again later.")
 
+        except ReadTimeout:
+            logging.error("Read timed out. Try again later.")
 
-def client_code(subject: Subject) -> None:
-    """
-    The client code is supposed to work with all objects (both subjects and
-    proxies) via the Subject interface in order to support both real subjects
-    and proxies. In real life, however, clients mostly work with their real
-    subjects directly. In this case, to implement the pattern more easily, you
-    can extend your proxy from the real subject's class.
-    """
+    def get_headers(self, data: dict) -> dict:
+        headers = self._fetch_url.get_headers(data)
+        logging.info(f"Getting the headers at {datetime.datetime.now()}")
+        return headers
 
-    # ...
+    def get_args(self, data: dict) -> dict:
+        args = self._fetch_url.get_args(data)
+        logging.info(f"Getting the args at {datetime.datetime.now()}")
+        return args
 
-    subject.request()
+class CacheFetchUrl(IFetchUrl):
+    def __init__(self) -> None:
+        self._fetch_url = ExcFetchUrl()
 
-    # ...
+    @functools.lru_cache(maxsize=32)
+    def get_data(self, url: str) -> dict:
+        data = self._fetch_url.get_data(url)
+        return data
+
+    def get_headers(self, data: dict) -> dict:
+        headers = self._fetch_url.get_headers(data)
+        return headers
+
+    def get_args(self, data: dict) -> dict:
+        args = self._fetch_url.get_args(data)
+        return args
 
 
 if __name__ == "__main__":
-    print("Client: Executing the client code with a real subject:")
-    real_subject = RealSubject()
-    client_code(real_subject)
+    fetch = CacheFetchUrl()
 
-    print("")
-
-    print("Client: Executing the same client code with a proxy:")
-    proxy = Proxy(real_subject)
-    client_code(proxy)
+    for arg1, arg2 in zip([1, 2, 3, 1, 2, 3], [1, 2, 3, 1, 2, 3]):
+        url = f"https://postman-echo.com/get?foo1=bar_{arg1}&foo2=bar_{arg2}"
+        print(f"\n {'-'*75}\n")
+        data = fetch.get_data(url)
+        print(f"Cache Info: {fetch.get_data.cache_info()}")
+        print(fetch.get_headers(data))
+        print(fetch.get_args(data))
