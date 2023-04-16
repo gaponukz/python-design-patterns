@@ -4,7 +4,7 @@ class SpotFlyweight:
     _spots: dict[str, Spot] = {}
 
     @classmethod
-    def get_spot(cls, spot: Spot) -> "Spot":
+    def get_spot(cls, spot: Spot) -> Spot:
         spot_id = str(spot)
 
         if spot_id not in cls._spots:
