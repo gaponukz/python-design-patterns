@@ -9,6 +9,7 @@ Design patterns with python examples.
  - [builder](builder) 
  - [adapter](adapter)
  - [facade](facade)
+ - [observer](observer)
  - [prototype](prototype) 
  - [proxy](proxy)
  - [Chain of Responsibility](chain_of_responsibility)
