@@ -14,6 +14,7 @@ Design patterns with python examples.
  - [proxy](proxy)
  - [Chain of Responsibility](chain_of_responsibility)
  - [template method](template_method)
- - [composite](composite) 
+ - [composite](composite)
  - [flyweight](flyweight) 
+ - [visitor](visitor) 
  - [singleton](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 
